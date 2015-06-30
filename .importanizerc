@@ -1,0 +1,21 @@
+{
+    "formatter": "grouped",
+    "groups": [
+        {
+            "type": "stdlib"
+        },
+        {
+            "type": "remainder"
+        },
+        {
+            "type": "packages",
+            "packages": [
+                "formslayer",
+                "pdf"
+            ]
+        },
+        {
+            "type": "local"
+        }
+    ]
+}

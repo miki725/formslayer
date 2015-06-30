@@ -1,0 +1,11 @@
+django-braces
+django-crispy-forms
+django-pipeline
+django-vanilla-views
+djangorestframework<4
+psycopg2
+six
+structlog
+django-dirtyfields
+
+# django-auxilium
