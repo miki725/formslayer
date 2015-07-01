@@ -36,10 +36,15 @@ class FillFormSerializer(serializers.Serializer):
 class PDFFormSerializer(serializers.ModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='api:pdf-form-detail')
     id = fields.UUIDField(format='hex', read_only=True)
+    filled = serializers.HyperlinkedIdentityField(
+        view_name='api:filled-pdf-form-list',
+        lookup_field='pk',
+        lookup_url_kwarg='form_pk',
+    )
 
     class Meta(object):
         model = PDFForm
-        fields = ['url', 'id', 'name', 'pdf', 'created']
+        fields = ['url', 'id', 'name', 'pdf', 'created', 'filled']
         read_only_fields = ['pdf', 'created']
 
 
