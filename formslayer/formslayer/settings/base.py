@@ -77,6 +77,10 @@ LOGOUT_URL = '/logout/'
 LOGIN_REDIRECT_URL = '/'
 WSGI_APPLICATION = 'formslayer.wsgi.application'
 
+REST_FRAMEWORK = {
+    'PAGE_SIZE': 100,
+}
+
 # Pipeline
 PIPELINE_COMPILERS = (
     'pipeline.compilers.less.LessCompiler',

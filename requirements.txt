@@ -1,11 +1,12 @@
 django-braces
 django-crispy-forms
+django-dirtyfields
 django-pipeline
 django-vanilla-views
 djangorestframework<4
+drf-nested-routers
 psycopg2
 six
 structlog
-django-dirtyfields
 
 # django-auxilium

@@ -9,7 +9,10 @@ import structlog
 from .exceptions import PDFNotFilled
 
 
-PDFTK_PATH = os.environ.get('PDFTK_PATH') or check_output('which pdftk', shell=True)
+PDFTK_PATH = (
+    os.environ.get('PDFTK_PATH')
+    or check_output('which pdftk', shell=True).decode('utf-8').rstrip('\n')
+)
 log = structlog.get_logger()
 
 
@@ -55,6 +58,8 @@ class PDFFiller(object):
                       output='-',
                       flatten=self.flatten and 'flatten' or '')
         )
+
+        log.debug(cmd)
 
         try:
             p = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE, stdin=PIPE)

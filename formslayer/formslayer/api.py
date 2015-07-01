@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function, unicode_literals
 
-from rest_framework.routers import DefaultRouter
+from django.conf.urls import include, patterns, url
 
-from pdf.viewsets import PDFFormViewSet
+from pdf.api import urlpatterns as pdf_urlpatterns
 
 
-router = DefaultRouter()
-router.register('pdf/forms', PDFFormViewSet, 'pdf-forms')
-urlpatterns = router.urls
+urlpatterns = patterns(
+    '',
+    url('^pdf/', include(pdf_urlpatterns)),
+)
