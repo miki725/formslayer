@@ -19,12 +19,14 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     'braces',
     'django_extensions',
-    'vanilla',
-    'pipeline',
-    'rest_framework.authtoken',
+    'compressor',
     'rest_framework',
+    'rest_framework.authtoken',
+    'vanilla',
+
     'pdf',
 )
 
@@ -35,7 +37,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    # 'django_auxilium.middleware.html.MinifyHTMLMiddleware',
+    'django_auxilium.middleware.html.MinifyHTMLMiddleware',
 )
 
 LANGUAGE_CODE = 'en-us'
@@ -57,8 +59,8 @@ STATICFILES_DIRS = (
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'compressor.finders.CompressorFinder',
 )
-STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
 
 # Templates
 TEMPLATE_DIRS = (
@@ -81,63 +83,6 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 100,
 }
 
-# Pipeline
-PIPELINE_COMPILERS = (
-    'pipeline.compilers.less.LessCompiler',
+COMPRESS_PRECOMPILERS = (
+    ('text/less', 'lessc {infile} {outfile}'),
 )
-PIPELINE_CSS = {
-    'bootstrap': {
-        'source_filenames': [
-            'lib/bootstrap/less/bootstrap.less',
-        ],
-        'output_filename': 'lib/bootstrap/bootstrap.css',
-        'extra_context': {
-            'media': 'screen',
-        },
-    },
-    'login': {
-        'source_filenames': [
-            'account/less/login.less',
-        ],
-        'output_filename': 'account/css/login.css',
-        'extra_context': {
-            'media': 'screen',
-        },
-    },
-    'errors': {
-        'source_filenames': [
-            'errors/less/errors.less',
-        ],
-        'output_filename': 'errors/css/errors.css',
-        'extra_context': {
-            'media': 'screen',
-        },
-    },
-}
-PIPELINE_JS = {
-    'bootstrap': {
-        'source_filenames': [
-            'lib/jquery/jquery.min.js',
-            'lib/bootstrap/js/affix.js',
-            'lib/bootstrap/js/alert.js',
-            'lib/bootstrap/js/button.js',
-            'lib/bootstrap/js/carousel.js',
-            'lib/bootstrap/js/collapse.js',
-            'lib/bootstrap/js/dropdown.js',
-            'lib/bootstrap/js/modal.js',
-            'lib/bootstrap/js/popover.js',
-            'lib/bootstrap/js/scrollspy.js',
-            'lib/bootstrap/js/tab.js',
-            'lib/bootstrap/js/tooltip.js',
-            'lib/bootstrap/js/transition.js',
-        ],
-        'output_filename': 'lib/bootstrap/bootstrap.js',
-    },
-    'ie': {
-        'source_filenames': [
-            'lib/html5shiv/html5shiv.js',
-            'lib/respond/respond.js',
-        ],
-        'output_filename': 'lib/ie.js',
-    },
-}
