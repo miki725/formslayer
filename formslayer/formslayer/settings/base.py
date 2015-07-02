@@ -12,25 +12,28 @@ import os
 PROJECT_PATH = os.path.abspath(os.path.join(__file__, '..', '..', '..'))
 PROJECT_NAME = os.path.basename(PROJECT_PATH)
 
-INSTALLED_APPS = (
+INSTALLED_APPS = [
+    'pdf',
+
+    'braces',
+    'compressor',
+    'django_extensions',
+    'djangosecure',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'storages',
+    'vanilla',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+]
 
-    'braces',
-    'django_extensions',
-    'compressor',
-    'rest_framework',
-    'rest_framework.authtoken',
-    'vanilla',
-
-    'pdf',
-)
-
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE_CLASSES = [
+    'djangosecure.middleware.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -38,7 +41,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django_auxilium.middleware.html.MinifyHTMLMiddleware',
-)
+]
 
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'America/New_York'
@@ -56,21 +59,16 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     os.path.join(PROJECT_PATH, PROJECT_NAME, 'static'),
 )
-STATICFILES_FINDERS = (
+STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'compressor.finders.CompressorFinder',
-)
+]
 
 # Templates
-TEMPLATE_DIRS = (
+TEMPLATE_DIRS = [
     os.path.join(PROJECT_PATH, PROJECT_NAME, 'templates'),
-)
-TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
-)
-
+]
 
 # URLs
 ROOT_URLCONF = 'formslayer.urls'
@@ -79,13 +77,66 @@ LOGOUT_URL = '/logout/'
 LOGIN_REDIRECT_URL = '/'
 WSGI_APPLICATION = 'formslayer.wsgi.application'
 
+# DRF
 REST_FRAMEWORK = {
     'PAGE_SIZE': 100,
 }
 
-COMPRESS_OFFLINE = True
+# django-compressor
+COMPRESS_OFFLINE = False
 COMPRESS_CSS_FILTERS = ['compressor.filters.yuglify.YUglifyCSSFilter']
 COMPRESS_JS_FILTERS = ['compressor.filters.yuglify.YUglifyJSFilter']
-COMPRESS_PRECOMPILERS = (
+COMPRESS_PRECOMPILERS = [
     ('text/less', 'lessc {infile} {outfile}'),
-)
+]
+
+# logging
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '%(asctime)s '
+                      '%(levelname)s '
+                      '%(name)s '
+                      '%(message)s'
+        },
+        'simple': {
+            'format': '%(levelname)s '
+                      '%(name)s '
+                      '%(message)s'
+        },
+    },
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse'
+        }
+    },
+    'handlers': {
+        'null': {
+            'level': 'INFO',
+            'class': 'logging.NullHandler',
+        },
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
+        'mail_admins': {
+            'level': 'ERROR',
+            'filters': ['require_debug_false'],
+            'class': 'django.utils.log.AdminEmailHandler'
+        },
+    },
+    'loggers': {
+        'django.request': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'pdf': {
+            'level': 'INFO',
+            'handlers': ['console'],
+        }
+    }
+}

@@ -43,7 +43,6 @@ Thumbs.db
 
 # Sensitive files #
 ###################
-prod.py
 
 # Images #
 ##########
@@ -66,4 +65,3 @@ all_static/
 ###############
 # PyCharm
 .idea
-
