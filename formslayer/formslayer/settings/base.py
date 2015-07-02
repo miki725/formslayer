@@ -83,6 +83,9 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 100,
 }
 
+COMPRESS_OFFLINE = True
+COMPRESS_CSS_FILTERS = ['compressor.filters.yuglify.YUglifyCSSFilter']
+COMPRESS_JS_FILTERS = ['compressor.filters.yuglify.YUglifyJSFilter']
 COMPRESS_PRECOMPILERS = (
     ('text/less', 'lessc {infile} {outfile}'),
 )

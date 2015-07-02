@@ -12,11 +12,13 @@ from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from .models import FilledPDFForm, PDFForm
+from .pagination import FilledFormPageNumberPagination
 from .permissions import IsOwnerPermission
 from .serializers import (
     FillFormSerializer,
+    FilledPDFFormNestedSerializer,
     FilledPDFFormSerializer,
-    PDFFormSerializer,
+    PDFFormNestedSerializer,
 )
 
 
@@ -26,7 +28,7 @@ class PDFFormViewSet(mixins.ListModelMixin,
                      mixins.DestroyModelMixin,
                      GenericViewSet):
     queryset = PDFForm.objects.all()
-    serializer_class = PDFFormSerializer
+    serializer_class = PDFFormNestedSerializer
 
     authentication_classes = [
         TokenAuthentication,
@@ -48,14 +50,19 @@ class FilledPDFFormViewSet(mixins.ListModelMixin,
                            GenericViewSet):
     queryset = FilledPDFForm.objects.select_related('form').all()
     serializer_class = FilledPDFFormSerializer
+    serializer_nested_class = FilledPDFFormNestedSerializer
 
     authentication_classes = [
         TokenAuthentication,
         SessionAuthentication,
     ]
     permission_classes = [
-        partial(IsOwnerPermission, owner_getter=lambda i: i.form.owner),
+        partial(
+            IsOwnerPermission,
+            owner_getter=lambda i: hasattr(i, 'owner') and i.owner or i.form.owner
+        ),
     ]
+    pagination_class = FilledFormPageNumberPagination
 
     def get_form_queryset(self):
         return PDFForm.objects.filter(owner_id=self.request.user.pk)
@@ -69,6 +76,13 @@ class FilledPDFFormViewSet(mixins.ListModelMixin,
         return (super(FilledPDFFormViewSet, self).get_queryset()
                 .filter(form__owner_id=self.request.user.pk,
                         form_id=self.kwargs['form_pk']))
+
+    def get_serializer_class(self):
+        if any([self.paginator is None,
+                self.request.resolver_match.url_name.endswith('detail')]):
+            return self.serializer_nested_class
+        else:
+            return self.serializer_class
 
     def create(self, request, form_pk):
         # this sets self.form
