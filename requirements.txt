@@ -8,6 +8,8 @@ django-storages-redux
 django-vanilla-views
 djangorestframework<4
 drf-nested-routers
+gunicorn
+newrelic
 psycopg2
 six
 structlog
