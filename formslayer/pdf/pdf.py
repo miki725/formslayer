@@ -17,12 +17,12 @@ log = structlog.get_logger()
 
 
 class PDFFiller(object):
-    def __init__(self, pdf_path, data, flatten=False):
-        self.pdf_path = pdf_path
+    def __init__(self, pdf, data, flatten=False):
+        self.pdf = pdf
         self.data = data
         self.flatten = flatten
 
-        log.bind(pdf_path=self.pdf_path)
+        log.bind(pdf_name=self.pdf.name)
 
     def generate_fdf(self):
         fields = []
@@ -50,10 +50,14 @@ class PDFFiller(object):
         os.write(fdf_fid, fdf)
         os.close(fdf_fid)
 
+        pdf_fid, pdf_path = tempfile.mkstemp(suffix='.pdf')
+        os.write(pdf_fid, self.pdf.read())
+        os.close(pdf_fid)
+
         cmd = (
             '{pdftk} {pdf} fill_form {fdf} output {output} {flatten}'
             ''.format(pdftk=PDFTK_PATH,
-                      pdf=self.pdf_path,
+                      pdf=pdf_path,
                       fdf=fdf_path,
                       output='-',
                       flatten=self.flatten and 'flatten' or '')
@@ -78,3 +82,4 @@ class PDFFiller(object):
 
         finally:
             os.unlink(fdf_path)
+            os.unlink(pdf_path)

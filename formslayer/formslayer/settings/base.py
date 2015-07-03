@@ -9,7 +9,8 @@ from __future__ import print_function, unicode_literals
 import os
 
 
-PROJECT_PATH = os.path.abspath(os.path.join(__file__, '..', '..', '..'))
+PROJECT_PATH = os.path.abspath(os.path.join(__file__, '..', '..'))
+PROJECT_ROOT = os.path.dirname(PROJECT_PATH)
 PROJECT_NAME = os.path.basename(PROJECT_PATH)
 
 INSTALLED_APPS = [
@@ -17,7 +18,6 @@ INSTALLED_APPS = [
 
     'braces',
     'compressor',
-    'django_extensions',
     'djangosecure',
     'rest_framework',
     'rest_framework.authtoken',
@@ -50,15 +50,15 @@ USE_L10N = True
 USE_TZ = True
 
 # Media files
-MEDIA_ROOT = os.path.join(PROJECT_PATH, PROJECT_NAME, 'media')
+MEDIA_ROOT = os.path.join(PROJECT_PATH, 'media')
 MEDIA_URL = '/media/'
 
 # Static files
-STATIC_ROOT = os.path.join(PROJECT_PATH, PROJECT_NAME, 'all_static')
+STATIC_ROOT = os.path.join(PROJECT_PATH, 'all_static')
 STATIC_URL = '/static/'
-STATICFILES_DIRS = (
-    os.path.join(PROJECT_PATH, PROJECT_NAME, 'static'),
-)
+STATICFILES_DIRS = [
+    os.path.join(PROJECT_PATH, 'static'),
+]
 STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
@@ -67,7 +67,7 @@ STATICFILES_FINDERS = [
 
 # Templates
 TEMPLATE_DIRS = [
-    os.path.join(PROJECT_PATH, PROJECT_NAME, 'templates'),
+    os.path.join(PROJECT_PATH, 'templates'),
 ]
 
 # URLs

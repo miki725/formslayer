@@ -24,7 +24,7 @@ class FillFormSerializer(serializers.Serializer):
     def create(self, validated_data):
         data = {i['name']: i['value'] for i in validated_data['fields']}
 
-        pdf_data = PDFFiller(self.form.pdf.path, data)()
+        pdf_data = PDFFiller(self.form.pdf, data)()
         pdf = ContentFile(pdf_data, 'foo.pdf')
 
         return FilledPDFForm.objects.create(

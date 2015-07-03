@@ -31,15 +31,19 @@ MIDDLEWARE_CLASSES = [
 ] + MIDDLEWARE_CLASSES
 
 DEFAULT_FILE_STORAGE = 'formslayer.storages.MediaS3BotoStorage'
+STATICFILES_STORAGE = 'formslayer.storages.StaticS3BotoStorage'
 COMPRESS_STORAGE = 'formslayer.storages.StaticS3BotoStorage'
 
 AWS_ACCESS_KEY_ID = env('AWS_S3_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = env('AWS_S3_SECRET_ACCESS_KEY')
 AWS_STATIC_STORAGE_BUCKET_NAME = env('AWS_S3_STATIC_STORAGE_BUCKET_NAME')
 AWS_MEDIA_STORAGE_BUCKET_NAME = env('AWS_S3_MEDIA_STORAGE_BUCKET_NAME')
+AWS_S3_STATIC_CUSTOM_DOMAIN = '{bucket}.s3.amazonaws.com'.format(bucket=AWS_STATIC_STORAGE_BUCKET_NAME)
+AWS_S3_MEDIA_CUSTOM_DOMAIN = '{bucket}.s3.amazonaws.com'.format(bucket=AWS_MEDIA_STORAGE_BUCKET_NAME)
 
-STATIC_URL = COMPRESS_URL = 'https://s3.amazonaws.com/{bucket}/'.format(bucket=AWS_STATIC_STORAGE_BUCKET_NAME)
-MEDIA_URL = 'https://s3.amazonaws.com/{bucket}/'.format(bucket=AWS_MEDIA_STORAGE_BUCKET_NAME)
+COMPRESS_ROOT = STATIC_ROOT
+STATIC_URL = COMPRESS_URL = 'https://{bucket}.s3.amazonaws.com/'.format(bucket=AWS_STATIC_STORAGE_BUCKET_NAME)
+MEDIA_URL = 'https://{bucket}.s3.amazonaws.com/'.format(bucket=AWS_MEDIA_STORAGE_BUCKET_NAME)
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
@@ -50,7 +54,7 @@ SECURE_HSTS_INCLUDE_SUBDOMAINS = None  # added by nginx
 SECURE_FRAME_DENY = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_BROWSER_XSS_FILTER = True
-SECURE_SSL_REDIRECT = True
+# SECURE_SSL_REDIRECT = True  # handled by nginx
 
 SECURE_CHECKS = [
     'djangosecure.check.csrf.check_csrf_middleware',
@@ -61,7 +65,7 @@ SECURE_CHECKS = [
     'djangosecure.check.djangosecure.check_frame_deny',
     'djangosecure.check.djangosecure.check_content_type_nosniff',
     'djangosecure.check.djangosecure.check_xss_filter',
-    'djangosecure.check.djangosecure.check_ssl_redirect',
+    # 'djangosecure.check.djangosecure.check_ssl_redirect',
 ]
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
