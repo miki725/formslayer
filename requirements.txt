@@ -13,4 +13,4 @@ six
 structlog
 
 https://github.com/miki725/breach_buster/archive/master.tar.gz
-https://github.com/miki725/django-auxilium/archive/master.tar.gz
+https://github.com/miki725/django-auxilium/archive/develop.tar.gz
