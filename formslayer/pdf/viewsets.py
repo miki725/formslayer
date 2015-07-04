@@ -9,6 +9,7 @@ from rest_framework.authentication import (
     SessionAuthentication,
     TokenAuthentication,
 )
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
@@ -39,6 +40,7 @@ class PDFFormViewSet(mixins.ListModelMixin,
         SessionAuthentication,
     ]
     permission_classes = [
+        IsAuthenticated,
         IsOwnerPermission,
     ]
 
@@ -61,6 +63,7 @@ class FilledPDFFormViewSet(mixins.ListModelMixin,
         SessionAuthentication,
     ]
     permission_classes = [
+        IsAuthenticated,
         partial(
             IsOwnerPermission,
             owner_getter=lambda i: hasattr(i, 'owner') and i.owner or i.form.owner
