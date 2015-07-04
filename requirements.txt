@@ -10,6 +10,7 @@ djangorestframework<4
 drf-nested-routers
 gunicorn
 newrelic
+opbeat
 psycopg2
 six
 structlog

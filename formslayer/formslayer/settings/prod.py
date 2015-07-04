@@ -13,6 +13,10 @@ DEBUG = False
 
 ALLOWED_HOSTS = env('ALLOWED_HOSTS').split(',')
 
+INSTALLED_APPS += [
+    'opbeat.contrib.django',
+]
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -27,8 +31,16 @@ DATABASES = {
 SECRET_KEY = env('SECRET_KEY')
 
 MIDDLEWARE_CLASSES = [
+    'opbeat.contrib.django.middleware.OpbeatAPMMiddleware',
     'breach_buster.middleware.gzip.GZipMiddleware',
 ] + MIDDLEWARE_CLASSES
+
+TEMPLATE_LOADERS = (
+    ('django.template.loaders.cached.Loader', (
+        'django.template.loaders.filesystem.Loader',
+        'django.template.loaders.app_directories.Loader',
+    )),
+)
 
 DEFAULT_FILE_STORAGE = 'formslayer.storages.MediaS3BotoStorage'
 STATICFILES_STORAGE = 'formslayer.storages.StaticS3BotoStorage'
@@ -75,5 +87,11 @@ EMAIL_HOST_USER = env('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
+
+OPBEAT = {
+    'ORGANIZATION_ID': env('OPBEAT_ORGANIZATION_ID'),
+    'APP_ID': env('OPBEAT_APP_ID'),
+    'SECRET_TOKEN': env('OPBEAT_SECRET_TOKEN'),
+}
 
 COMPRESS_OFFLINE = True
