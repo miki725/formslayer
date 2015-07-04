@@ -22,7 +22,7 @@ class PDFFiller(object):
         self.data = data
         self.flatten = flatten
 
-        log.bind(pdf_name=self.pdf.name)
+        log.bind(pdf=pdf, pdf_name=self.pdf.name)
 
     def generate_fdf(self):
         fields = []
@@ -63,17 +63,19 @@ class PDFFiller(object):
                       flatten=self.flatten and 'flatten' or '')
         )
 
-        log.debug(cmd)
+        log.debug('Filling in pdf', cmd=cmd)
 
         try:
             p = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE, stdin=PIPE)
             stdout, stderr = p.communicate(fdf, 10)
 
-        except SubprocessError:
+        except SubprocessError as e:
+            log.error('Error filling in pdf', error=e)
             raise PDFNotFilled()
 
         else:
             if p.returncode != 0:
+                log.error('Error filling in pdf', returncode=p.returncode, stderr=stderr)
                 raise PDFNotFilled()
 
             log.info('Successfully filled in pdf')

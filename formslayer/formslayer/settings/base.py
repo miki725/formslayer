@@ -8,6 +8,8 @@ https://docs.djangoproject.com/en/dev/ref/settings/
 from __future__ import print_function, unicode_literals
 import os
 
+import structlog
+
 
 PROJECT_PATH = os.path.abspath(os.path.join(__file__, '..', '..'))
 PROJECT_ROOT = os.path.dirname(PROJECT_PATH)
@@ -33,6 +35,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE_CLASSES = [
+    'formslayer.middlware.LoggerMidleware',
     'djangosecure.middleware.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -118,7 +121,7 @@ LOGGING = {
             'class': 'logging.NullHandler',
         },
         'console': {
-            'level': 'INFO',
+            'level': 'DEBUG',
             'class': 'logging.StreamHandler',
             'formatter': 'verbose',
         },
@@ -140,3 +143,11 @@ LOGGING = {
         }
     }
 }
+
+structlog.configure(
+    processors=[
+        structlog.processors.JSONRenderer(),
+    ],
+    context_class=structlog.threadlocal.wrap_dict(dict),
+    logger_factory=structlog.stdlib.LoggerFactory(),
+)

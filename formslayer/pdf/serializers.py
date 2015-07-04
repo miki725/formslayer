@@ -1,12 +1,16 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function, unicode_literals
 
+import structlog
 from django.core.files.base import ContentFile
 from rest_framework import fields, serializers
 
 from .models import FilledPDFForm, PDFForm
 from .pdf import PDFFiller
 from .relations import MultiplePKsHyperlinkedIdentityField
+
+
+log = structlog.get_logger()
 
 
 class FillFormFieldSerializer(serializers.Serializer):
@@ -27,10 +31,16 @@ class FillFormSerializer(serializers.Serializer):
         pdf_data = PDFFiller(self.form.pdf, data)()
         pdf = ContentFile(pdf_data, 'foo.pdf')
 
-        return FilledPDFForm.objects.create(
+        filled_in_pdf = FilledPDFForm.objects.create(
             form_id=self.form.pk,
             filled_pdf=pdf,
         )
+
+        log.info('Created filled in PDF',
+                 filled_in_pdf=filled_in_pdf,
+                 filled_in_pdf_name=filled_in_pdf.filled_pdf.name)
+
+        return filled_in_pdf
 
 
 class PDFFormSerializer(serializers.ModelSerializer):

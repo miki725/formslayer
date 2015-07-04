@@ -2,6 +2,7 @@
 from __future__ import print_function, unicode_literals
 from functools import partial
 
+import structlog
 from django.shortcuts import get_object_or_404
 from rest_framework import mixins, status
 from rest_framework.authentication import (
@@ -20,6 +21,9 @@ from .serializers import (
     FilledPDFFormSerializer,
     PDFFormNestedSerializer,
 )
+
+
+log = structlog.get_logger()
 
 
 class PDFFormViewSet(mixins.ListModelMixin,
@@ -72,6 +76,8 @@ class FilledPDFFormViewSet(mixins.ListModelMixin,
             self.get_form_queryset(),
             pk=self.kwargs['form_pk']
         )
+
+        log.bind(owner=self.request.user.username, form=self.form)
 
         return (super(FilledPDFFormViewSet, self).get_queryset()
                 .filter(form__owner_id=self.request.user.pk,
