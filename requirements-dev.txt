@@ -1,7 +1,9 @@
 -r requirements.txt
+Werkzeug
+coverage
 django-extensions
 flake8
 importanize
 ipython
+pytest-django
 watchdog
-Werkzeug
