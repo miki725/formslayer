@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function, unicode_literals
-from contextlib import contextmanager
 import os
 import tempfile
+from contextlib import contextmanager
 from subprocess import PIPE, Popen, SubprocessError, check_output
 
 import structlog

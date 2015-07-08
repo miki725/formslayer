@@ -46,4 +46,4 @@ class FilledPDFForm(DirtyFieldsMixin, models.Model):
                 '{id} for <{form}>'
                 ''.format(id=self.id, form=six.text_type(self.form))
             )
-        return self.id
+        return six.text_type(self.id)

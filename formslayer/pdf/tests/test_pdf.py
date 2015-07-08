@@ -2,12 +2,12 @@
 from __future__ import print_function, unicode_literals
 from subprocess import PIPE, SubprocessError
 
-import pytest
 import mock
+import pytest
 from django.core.files.base import ContentFile
 
-from pdf.pdf import PDFFiller, tmp_file
 from pdf.exceptions import PDFNotFilled
+from pdf.pdf import PDFFiller, tmp_file
 
 
 TESTING_MODULE = 'pdf.pdf'
