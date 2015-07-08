@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function, unicode_literals
+from contextlib import contextmanager
 import os
 import tempfile
 from subprocess import PIPE, Popen, SubprocessError, check_output
@@ -14,6 +15,24 @@ PDFTK_PATH = (
     or check_output('which pdftk', shell=True).decode('utf-8').rstrip('\n')
 )
 log = structlog.get_logger()
+
+
+@contextmanager
+def tmp_file(*args, **kwargs):
+    # generate tmp file in most secure way
+    fid, path = tempfile.mkstemp(
+        suffix=kwargs.pop('suffix', None),
+        prefix=kwargs.pop('prefix', 'tmp'),
+        dir=kwargs.pop('dir', None),
+    )
+    f = os.fdopen(fid, *args, **kwargs)
+    f.path = path
+
+    yield f
+
+    if not f.closed:
+        f.close()
+    os.unlink(path)
 
 
 class PDFFiller(object):
@@ -43,22 +62,12 @@ class PDFFiller(object):
 
         return xfdf.encode('utf-8')
 
-    def __call__(self):
-        fdf = self.generate_fdf()
-
-        fdf_fid, fdf_path = tempfile.mkstemp(suffix='.xfdf')
-        os.write(fdf_fid, fdf)
-        os.close(fdf_fid)
-
-        pdf_fid, pdf_path = tempfile.mkstemp(suffix='.pdf')
-        os.write(pdf_fid, self.pdf.read())
-        os.close(pdf_fid)
-
+    def call(self, xfsf_path, pdf_path):
         cmd = (
             '{pdftk} {pdf} fill_form {fdf} output {output} {flatten}'
             ''.format(pdftk=PDFTK_PATH,
                       pdf=pdf_path,
-                      fdf=fdf_path,
+                      fdf=xfsf_path,
                       output='-',
                       flatten=self.flatten and 'flatten' or '')
         )
@@ -67,7 +76,7 @@ class PDFFiller(object):
 
         try:
             p = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE, stdin=PIPE)
-            stdout, stderr = p.communicate(fdf, 10)
+            stdout, stderr = p.communicate(timeout=10)
 
         except SubprocessError as e:
             log.error('Error filling in pdf', error=e)
@@ -82,6 +91,13 @@ class PDFFiller(object):
 
             return stdout
 
-        finally:
-            os.unlink(fdf_path)
-            os.unlink(pdf_path)
+    def __call__(self):
+        fdf = self.generate_fdf()
+
+        with tmp_file('wb', suffix='.xfdf') as xfdf_fid, tmp_file('wb', suffix='.pdf') as pdf_fid:
+            xfdf_fid.write(fdf)
+            xfdf_fid.close()
+            pdf_fid.write(self.pdf.read())
+            pdf_fid.close()
+
+            return self.call(xfdf_fid.path, pdf_fid.path)
