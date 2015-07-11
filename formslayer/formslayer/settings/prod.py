@@ -1,4 +1,7 @@
 """
+Production-ready settings. All sensitive information is sources
+from environment variables.
+
 Checklist for production-ready settings:
 https://docs.djangoproject.com/en/dev/howto/deployment/checklist/
 """
@@ -67,7 +70,7 @@ SECURE_HSTS_INCLUDE_SUBDOMAINS = None  # added by nginx
 SECURE_FRAME_DENY = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_BROWSER_XSS_FILTER = True
-# SECURE_SSL_REDIRECT = True  # handled by nginx
+SECURE_SSL_REDIRECT = True
 
 SECURE_CHECKS = [
     'djangosecure.check.csrf.check_csrf_middleware',
@@ -78,7 +81,7 @@ SECURE_CHECKS = [
     'djangosecure.check.djangosecure.check_frame_deny',
     'djangosecure.check.djangosecure.check_content_type_nosniff',
     'djangosecure.check.djangosecure.check_xss_filter',
-    # 'djangosecure.check.djangosecure.check_ssl_redirect',
+    'djangosecure.check.djangosecure.check_ssl_redirect',
 ]
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

@@ -1,6 +1,9 @@
 """
 Django settings for formslayer project.
 
+This settings module is meant to contain all base configurations
+for all other setting configurations.
+
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/dev/ref/settings/
 """
@@ -67,6 +70,8 @@ STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'compressor.finders.CompressorFinder',
 ]
+
+SECRET_KEY = 'c*gbyuru7$wrxm438wl&p@movcvh$1^rl_*l0z6^(8x6n0qr=_'
 
 # Templates
 TEMPLATE_DIRS = [
