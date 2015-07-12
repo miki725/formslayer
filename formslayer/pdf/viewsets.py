@@ -86,9 +86,13 @@ class FilledPDFFormViewSet(mixins.ListModelMixin,
                 .filter(form__owner_id=self.request.user.pk,
                         form_id=self.kwargs['form_pk']))
 
+    def _is_request_to_detail(self):
+        lookup = self.lookup_url_kwarg or self.lookup_field
+        return lookup and lookup in self.kwargs
+
     def get_serializer_class(self):
         if any([self.paginator is None,
-                self.request.resolver_match.url_name.endswith('detail')]):
+                self._is_request_to_detail()]):
             return self.serializer_nested_class
         else:
             return self.serializer_class

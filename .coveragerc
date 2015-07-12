@@ -1,4 +1,8 @@
 [run]
 omit =
+  *gunicorn.py
+  *manage.py
+  *migrations/*
   *settings*
+  *tests*
   *wsgi.py
