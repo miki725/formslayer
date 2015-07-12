@@ -9,7 +9,7 @@ from formslayer.utils import env
 
 
 @mock.patch.dict(os.environ, {'foo': 'stuff'})
-def test_env_default():
+def test_env():
     assert env('foo', default='bar') == 'stuff'
 
 

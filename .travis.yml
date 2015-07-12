@@ -1,0 +1,10 @@
+language: python
+
+python:
+  - "3.4"
+
+install:
+  - pip install -r requirements-dev.txt
+  - pip freeze
+
+script: make check
