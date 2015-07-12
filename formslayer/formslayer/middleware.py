@@ -9,6 +9,6 @@ import structlog
 log = structlog.get_logger()
 
 
-class LoggerMidleware(object):
+class LoggerMiddleware(object):
     def process_request(self, request):
         request.log = log.new(request_id=six.text_type(uuid.uuid4()))

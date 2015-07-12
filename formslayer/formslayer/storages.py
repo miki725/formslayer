@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function, unicode_literals
 
-from django.core.files.storage import get_storage_class
+from compressor.storage import CompressorFileStorage
 from storages.backends.s3boto import S3BotoStorage
 from storages.utils import setting
 
@@ -12,7 +12,7 @@ class StaticS3BotoStorage(S3BotoStorage):
 
     def __init__(self, *args, **kwargs):
         super(StaticS3BotoStorage, self).__init__(*args, **kwargs)
-        self.local_storage = get_storage_class('compressor.storage.CompressorFileStorage')()
+        self.local_storage = CompressorFileStorage()
 
     def save(self, name, content):
         name = super(StaticS3BotoStorage, self).save(name, content)
